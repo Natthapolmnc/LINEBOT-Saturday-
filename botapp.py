@@ -5,9 +5,11 @@ from __future__ import unicode_literals
 from random import randint as ran
 import errno
 import os
+import foodhandler
 import sys
 import tempfile
-"""from googletrans import Translator"""
+from googletrans import Translator
+
 from argparse import ArgumentParser
 import emoji
 
@@ -92,25 +94,33 @@ def handle_text_message(event):
     global chck
     text = event.message.text
     if text == 'หิว':
-        n=ran(0,3)
-        ListHuew=['https://i.imgur.com/JVQLlIP.jpg',"https://i.imgur.com/QFqpHSX.gif","https://www.cookingclassy.com/wp-content/uploads/2018/05/grilled-lemon-herb-salmon-7.jpg","https://www.cbc.ca/food/content/images/recipes/CowboySteak.jpg"]
+        ListHuew=foodhandler.foodhandle()
+        n=ran(0,len(ListHuew))
         line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=ListHuew[n],preview_image_url=ListHuew[n]))
     elif text == 'bye bot':
         if isinstance(event.source, SourceGroup):
             line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text=emoji.emojize("รักนา:two_hearts:")))
+                event.reply_token, TextSendMessage(text=(event.message.text)))
             line_bot_api.leave_group(event.source.group_id)
         elif isinstance(event.source, SourceRoom):
             line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text=emoji.emojize("รักนา:two_hearts:")))
+                event.reply_token, TextSendMessage(text=(event.message.text)))
             line_bot_api.leave_room(event.source.room_id)
         else:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="Bot can't leave from 1:1 chat"))
+    elif text == "แปลภาษา" :
+            chck=0
+    elif text == "หยุดแปล" :
+            chck=1
+    elif chck==0 :
+        translator = Translator()
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(translator.translate(text=event.message.text).text))
     else:
         line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text=emoji.emojize("รักนา:two_hearts:")))
+                event.reply_token, TextSendMessage(text=(event.message.text)))
 
 
 if __name__ == "__main__":
