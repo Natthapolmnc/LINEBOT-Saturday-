@@ -94,7 +94,7 @@ def handle_text_message(event):
     global chck
     text = event.message.text
     if text == 'หิว':
-        ListHuew=foodhandler.foodhandle()
+        ListHuew=foodhandler.importfood()
         n=ran(0,len(ListHuew))
         line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=ListHuew[n],preview_image_url=ListHuew[n]))
     elif text == 'bye bot':
